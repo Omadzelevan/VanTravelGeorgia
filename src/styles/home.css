@@ -1,4 +1,4 @@
-.home {
+/* .home {
   width: 100%;
   min-height: 100vh;
   background-color: var(--bg-main);
@@ -38,4 +38,101 @@
 
 .home-button:hover {
   background-color: #ff4c4c;
+} */
+
+.hero {
+  margin-top: -5rem;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)),
+    url("https://images.unsplash.com/photo-1528127269322-539801943592");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+}
+
+.hero-content {
+  padding: 2rem;
+  max-width: 500px;
+
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero h2 {
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  color: #cccccc;
+}
+
+.hero p {
+  font-size: 1.4rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: #aaaaaa;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.primary-btn {
+  padding: 1rem;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondary-btn {
+  padding: 1rem;
+  background: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  cursor: pointer;
+}
+.tour-marquee {
+  position: absolute;
+  bottom: 5rem;
+  width:100%;
+  padding: 0;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0 auto;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  padding: 1.2rem 0;
+  white-space: nowrap;
+  animation: scroll 5s linear infinite;
+}
+
+.marquee-track span {
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #eaeaea;
+  opacity: 0.8;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }

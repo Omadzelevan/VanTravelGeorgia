@@ -25,6 +25,9 @@ body {
   padding: 1rem;
   display: flex;
   justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 .logo {
   display: flex;
@@ -70,7 +73,6 @@ body {
 .burger img {
   height: 4.5rem;
 }
-
 
 
 
