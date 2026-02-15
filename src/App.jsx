@@ -1,16 +1,24 @@
-import { useState } from "react";
 import "./App.css";
 import Header from "./components/layout/Header";
 import Home from "./pages/Home";
 import TourGallery from "./components/tour/TourGallery";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Testimonials from "./pages/Testimonials";
+import Footer from "./components/layout/Footer";
+
 function App() {
   return (
     <>
-      <Header></Header>
-      <Home></Home>
-      <TourGallery></TourGallery>
-      <About></About>
+      <Header />
+      <main>
+        <Home />
+        <TourGallery />
+        <About />
+        <Testimonials />
+        <Contact />
+      </main>
+      <Footer />
     </>
   );
 }
