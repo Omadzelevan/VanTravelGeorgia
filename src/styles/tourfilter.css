@@ -1,0 +1,143 @@
+/* Tour Filters */
+.tour-filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 5rem;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.6s 0.2s forwards;
+}
+
+.tour-filters button {
+  padding: 1rem 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  color: #cccccc;
+  font-size: 1.4rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ripple effect */
+.tour-filters button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.tour-filters button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.tour-filters button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.tour-filters button:active {
+  transform: translateY(0);
+}
+
+/* Active state */
+.tour-filters button.active {
+  background: linear-gradient(135deg, #555555, #333333);
+  border-color: #666666;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.tour-filters button.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ffffff, #888888);
+  border-radius: 2px;
+}
+
+/* Focus state for accessibility */
+.tour-filters button:focus {
+  outline: 2px solid #888888;
+  outline-offset: 3px;
+}
+
+
+
+/* Animation */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tour-filters {
+    gap: 1rem;
+    margin-bottom: 4rem;
+  }
+
+  .tour-filters button {
+    padding: 0.8rem 2rem;
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tour-filters {
+    gap: 0.8rem;
+    margin-bottom: 3rem;
+  }
+
+  .tour-filters button {
+    padding: 0.7rem 1.5rem;
+    font-size: 1.2rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .tour-filters,
+  .tour-filters button,
+  .tour-filters button::before {
+    animation: none;
+    transition: none;
+  }
+
+  .tour-filters {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .tour-filters {
+    display: none;
+  }
+}

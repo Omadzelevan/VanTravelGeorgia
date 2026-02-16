@@ -1,10 +1,14 @@
 import { useState } from "react";
 import ToursCard from "./TourCard";
 import TourFilters from "./TourFilters";
+import BookingModal from "../../features/booking/BookingModal";
 import "/home/lea/tours/tours-ge/src/styles/tours.css";
 
 export default function TourGallery() {
   const [filter, setFilter] = useState("all");
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [selectedTour, setSelectedTour] = useState(null);
+
   const tours = [
     {
       id: 1,
@@ -61,17 +65,30 @@ export default function TourGallery() {
   const filteredTours =
     filter === "all" ? tours : tours.filter((tour) => tour.category === filter);
 
+  const handleQuickBook = (tourData) => {
+    const tour = tours.find((t) => t.id === tourData.id);
+    setSelectedTour(tour);
+    setIsBookingOpen(true);
+  };
+
   return (
-    <section className="tour-gallery">
+    <section className="tour-gallery" id="tours">
       <h2>Our Tours</h2>
-
-      <TourFilters setFilter={setFilter} />
-
+      <TourFilters activeFilter={filter} setFilter={setFilter} />
       <div className="tour-grid">
         {filteredTours.map((tour) => (
-          <ToursCard key={tour.id} {...tour} />
+          <ToursCard key={tour.id} {...tour} onQuickBook={handleQuickBook} />
         ))}
       </div>
+
+      {/* Booking Modal */}
+      {selectedTour && (
+        <BookingModal
+          isOpen={isBookingOpen}
+          onClose={() => setIsBookingOpen(false)}
+          tour={selectedTour}
+        />
+      )}
     </section>
   );
 }
