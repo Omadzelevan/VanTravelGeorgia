@@ -1,4 +1,4 @@
-import "/home/lea/tours/tours-ge/src/styles/tourfilter.css";
+import "../../styles/tourfilter.css";
 
 export default function TourFilters({ activeFilter, setFilter }) {
   const filters = [

@@ -1,6 +1,6 @@
 import { useState } from "react";
 // import PropTypes from "prop-types";
-import "/home/lea/tours/tours-ge/src/styles/bookingmodal.css";
+import "../../styles/bookingmodal.css";
 
 export default function BookingModal({ isOpen, onClose, tour }) {
   const [formData, setFormData] = useState({

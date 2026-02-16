@@ -1,4 +1,4 @@
-import "/home/lea/tours/tours-ge/src/styles/about.css";
+import "../styles/about.css";
 
 export default function About() {
   return (

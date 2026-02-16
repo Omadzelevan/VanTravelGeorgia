@@ -2,7 +2,7 @@ import { useState } from "react";
 import ToursCard from "./TourCard";
 import TourFilters from "./TourFilters";
 import BookingModal from "../../features/booking/BookingModal";
-import "/home/lea/tours/tours-ge/src/styles/tours.css";
+import "../../styles/tours.css";
 
 export default function TourGallery() {
   const [filter, setFilter] = useState("all");

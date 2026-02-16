@@ -1,8 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BookingModal from "../../features/booking/BookingModal";
-import "/home/lea/tours/tours-ge/src/styles/tourdetail.css";
-
+import "../../styles/tourdetail.css";
 export default function TourDetail() {
   const { id } = useParams();
   const navigate = useNavigate();

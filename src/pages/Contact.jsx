@@ -1,4 +1,4 @@
-import "/home/lea/tours/tours-ge/src/styles/contact.css";
+import "../styles/contact.css";
 
 export default function Contact() {
   return (
