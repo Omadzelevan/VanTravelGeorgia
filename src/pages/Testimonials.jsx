@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
-import "/home/lea/tours/tours-ge/src/styles/testimonials.css";
-
+import "../styles/testimonials.css";
 export default function Testimonials() {
   const scrollRef = useRef(null);
 
@@ -15,7 +14,7 @@ export default function Testimonials() {
       scrollInterval = setInterval(() => {
         if (!isPaused && scrollContainer) {
           scrollContainer.scrollLeft += 1;
-          
+
           // Reset scroll when reaching the end
           if (
             scrollContainer.scrollLeft >=
@@ -114,7 +113,10 @@ export default function Testimonials() {
       <div className="testimonials-scroll-container" ref={scrollRef}>
         <div className="testimonials-track">
           {allTestimonials.map((testimonial, index) => (
-            <div key={`${testimonial.id}-${index}`} className="testimonial-card">
+            <div
+              key={`${testimonial.id}-${index}`}
+              className="testimonial-card"
+            >
               <div className="testimonial-header">
                 <div className="testimonial-avatar">
                   {testimonial.name.charAt(0)}
@@ -127,7 +129,9 @@ export default function Testimonials() {
 
               <div className="testimonial-rating">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <span key={i} className="star">★</span>
+                  <span key={i} className="star">
+                    ★
+                  </span>
                 ))}
               </div>
 
