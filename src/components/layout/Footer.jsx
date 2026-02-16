@@ -1,5 +1,5 @@
-import "/home/lea/tours/tours-ge/src/styles/footer.css";
-import Logo from "/home/lea/tours/tours-ge/src/assets/images/logo.png";
+import "../../styles/footer.css";
+import Logo from "../../assets/images/logo.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
