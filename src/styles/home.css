@@ -405,3 +405,138 @@
     display: none;
   }
 }
+
+/* Desktop Navigation */
+.desktop-nav {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .desktop-nav {
+    display: block;
+    flex: 1;
+    margin: 0 4rem;
+  }
+
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-menu li {
+    position: relative;
+  }
+
+  .nav-link {
+    display: block;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    letter-spacing: 0.3px;
+  }
+
+  /* Underline animation */
+  .nav-link::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #ffffff, #888888);
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover {
+    color: #cccccc;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .nav-link:hover::before {
+    width: 80%;
+  }
+
+  /* Active state */
+  .nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  .nav-link.active::before {
+    width: 80%;
+  }
+
+  /* Focus state */
+  .nav-link:focus {
+    outline: 2px solid #888888;
+    outline-offset: 3px;
+  }
+}
+
+/* Header layout adjustment for desktop */
+@media (min-width: 1024px) {
+  .header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 1.5rem 4rem;
+  }
+
+  .logo {
+    margin-right: 0;
+  }
+
+  .nav {
+    gap: 2rem;
+  }
+}
+
+/* Enhanced header on scroll */
+@media (min-width: 1024px) {
+  .header.scrolled {
+    padding: 1rem 4rem;
+  }
+
+  .header.scrolled .nav-link {
+    font-size: 1.4rem;
+    padding: 0.6rem 1rem;
+  }
+}
+
+/* Accessibility - Skip to content link (optional) */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: #000000;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  text-decoration: none;
+  z-index: 10000;
+  border-radius: 0 0 8px 0;
+  transition: top 0.3s ease;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Print styles */
+@media print {
+  .desktop-nav,
+  .nav,
+  .burger {
+    display: none;
+  }
+}

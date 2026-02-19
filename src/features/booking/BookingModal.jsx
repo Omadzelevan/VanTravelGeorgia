@@ -223,7 +223,8 @@ export default function BookingModal({ isOpen, onClose, tour }) {
               Thank you for booking <strong>{tour.title}</strong>!
             </p>
             <p>
-              We've sent a confirmation email to <strong>{formData.email}</strong>
+              We've sent a confirmation email to{" "}
+              <strong>{formData.email}</strong>
             </p>
             <p className="success-note">
               Our team will contact you within 24 hours to confirm the details.
@@ -234,6 +235,38 @@ export default function BookingModal({ isOpen, onClose, tour }) {
     </div>
   );
 }
+// BookingModal.jsx - Update handleSubmit
+const API_URL = "http://localhost:5000/api";
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+
+  try {
+    const response = await fetch(`${API_URL}/bookings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tourId: tour.id,
+        tourTitle: tour.title,
+        ...formData,
+        pricePerPerson: tour.price,
+        totalPrice: tour.price * formData.guests,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setIsSuccess(true);
+      // Email automatically sent!
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
 // BookingModal.propTypes = {
 //   isOpen: PropTypes.bool.isRequired,

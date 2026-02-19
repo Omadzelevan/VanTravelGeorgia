@@ -1,6 +1,89 @@
+import { useState } from "react";
 import "../styles/contact.css";
 
+const EMAILJS_ENDPOINT = "https://api.emailjs.com/api/v1.0/email/send";
+
+const initialFormData = {
+  name: "",
+  email: "",
+  phone: "",
+  subject: "",
+  message: "",
+};
+
 export default function Contact() {
+  const [formData, setFormData] = useState(initialFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState({ type: "", text: "" });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setStatus({ type: "", text: "" });
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      setStatus({
+        type: "error",
+        text: "Email service is not configured yet. Please try again later.",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(EMAILJS_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          service_id: serviceId,
+          template_id: templateId,
+          user_id: publicKey,
+          template_params: {
+            from_name: formData.name.trim(),
+            from_email: formData.email.trim(),
+            phone: formData.phone.trim(),
+            subject: formData.subject,
+            message: formData.message.trim(),
+            sent_at: new Date().toISOString(),
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("EmailJS request failed");
+      }
+
+      setStatus({
+        type: "success",
+        text: "Message sent successfully. We will contact you soon.",
+      });
+      setFormData(initialFormData);
+    } catch (error) {
+      console.error("Failed to send contact message:", error);
+      setStatus({
+        type: "error",
+        text: "Failed to send message. Please try again in a moment.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section className="contact" id="contact">
       <div className="contact-container">
@@ -77,8 +160,18 @@ export default function Contact() {
         </div>
 
         <div className="contact-form-wrapper">
-          <form className="contact-form">
+          <form className="contact-form" onSubmit={handleSubmit}>
             <h3>Send us a Message</h3>
+            {status.text ? (
+              <p
+                className={`form-alert ${
+                  status.type === "success" ? "is-success" : "is-error"
+                }`}
+                role={status.type === "error" ? "alert" : "status"}
+              >
+                {status.text}
+              </p>
+            ) : null}
 
             <div className="form-group">
               <label htmlFor="name">Your Name</label>
@@ -87,6 +180,8 @@ export default function Contact() {
                 id="name"
                 name="name"
                 placeholder="John Doe"
+                value={formData.name}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -98,6 +193,8 @@ export default function Contact() {
                 id="email"
                 name="email"
                 placeholder="john@example.com"
+                value={formData.email}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -109,12 +206,20 @@ export default function Contact() {
                 id="phone"
                 name="phone"
                 placeholder="+995 555 123 456"
+                value={formData.phone}
+                onChange={handleChange}
               />
             </div>
 
             <div className="form-group">
               <label htmlFor="subject">Subject</label>
-              <select id="subject" name="subject" required>
+              <select
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Select a topic</option>
                 <option value="booking">Tour Booking</option>
                 <option value="custom">Custom Tour Request</option>
@@ -130,12 +235,14 @@ export default function Contact() {
                 name="message"
                 rows="5"
                 placeholder="Tell us about your travel plans..."
+                value={formData.message}
+                onChange={handleChange}
                 required
               ></textarea>
             </div>
 
-            <button type="submit" className="submit-btn">
-              <span>Send Message</span>
+            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+              <span>{isSubmitting ? "Sending..." : "Send Message"}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"

@@ -7,6 +7,7 @@ import TourDetail from "./components/tour/TourDetail";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Testimonials from "./pages/Testimonials";
+import Admin from "./pages/Admin";
 import Footer from "./components/layout/Footer";
 
 function HomePage() {
@@ -30,6 +31,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/tour/:id" element={<TourDetail />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
     </Router>

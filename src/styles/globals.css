@@ -1,3 +1,5 @@
+@import './mobilemenu.css';
+
 /* Global Styles */
 * {
   margin: 0;
@@ -181,44 +183,7 @@ body {
   box-shadow: 0 0 0 2px rgba(136, 136, 136, 0.2);
 }
 
-/* Burger Menu */
-.burger {
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: var(--transition-base);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  border-radius: 8px;
-}
-
-.burger:hover {
-  transform: scale(1.1);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.burger:active {
-  transform: scale(0.95);
-}
-
-.burger:focus {
-  outline: 2px solid var(--accent-light);
-  outline-offset: 2px;
-}
-
-.burger img {
-  height: 4rem;
-  width: 4rem;
-  display: block;
-  filter: brightness(0) invert(1); /* Make icon white */
-  transition: var(--transition-base);
-}
-
-.burger:hover img {
-  filter: brightness(0) invert(0.8);
-}
+/* Burger menu styles moved to mobile-menu.css */
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -241,11 +206,6 @@ body {
   .lang-chose select {
     font-size: 1.3rem;
     padding: 0.7rem 2.5rem 0.7rem 1rem;
-  }
-
-  .burger img {
-    height: 3.5rem;
-    width: 3.5rem;
   }
 }
 

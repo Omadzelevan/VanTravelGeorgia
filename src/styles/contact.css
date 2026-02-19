@@ -213,6 +213,26 @@
   font-weight: 600;
 }
 
+.form-alert {
+  margin: 0 0 1.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+}
+
+.form-alert.is-success {
+  color: #d5f5e3;
+  background: rgba(46, 204, 113, 0.12);
+  border-color: rgba(46, 204, 113, 0.35);
+}
+
+.form-alert.is-error {
+  color: #ffd7d7;
+  background: rgba(231, 76, 60, 0.12);
+  border-color: rgba(231, 76, 60, 0.35);
+}
+
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -284,6 +304,12 @@
 
 .submit-btn:active {
   transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .submit-btn svg {

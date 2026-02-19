@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import "../../styles/globals.css";
 import "../../styles/mobilemenu.css";
-// import burger from "../../assets/icons/hamburger 1.svg";
 import Logo from "../../assets/images/logo.png";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [language, setLanguage] = useState("en");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
   // Add scroll effect to header
   useEffect(() => {
@@ -16,6 +16,21 @@ export default function Header() {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
+      }
+
+      // Track active section
+      const sections = ["home", "about", "tours", "testimonials", "contact"];
+      const current = sections.find((section) => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 100 && rect.bottom >= 100;
+        }
+        return false;
+      });
+
+      if (current) {
+        setActiveSection(current);
       }
     };
 
@@ -48,6 +63,14 @@ export default function Header() {
     setMenuOpen(false);
   };
 
+  const navLinks = [
+    { id: "home", label: "Home" },
+    { id: "about", label: "About" },
+    { id: "tours", label: "Tours" },
+    { id: "testimonials", label: "Testimonials" },
+    { id: "contact", label: "Contact" },
+  ];
+
   return (
     <>
       <header className={`header ${isScrolled ? "scrolled" : ""}`}>
@@ -57,6 +80,25 @@ export default function Header() {
           </a>
         </div>
 
+        {/* Desktop Navigation */}
+        <nav className="desktop-nav" aria-label="Main navigation">
+          <ul className="nav-menu">
+            {navLinks.map((link) => (
+              <li key={link.id}>
+                <a
+                  href={`#${link.id}`}
+                  className={`nav-link ${
+                    activeSection === link.id ? "active" : ""
+                  }`}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Right Side Actions */}
         <div className="nav">
           <div className="lang-chose">
             <label htmlFor="language-select" className="visually-hidden">
@@ -100,31 +142,13 @@ export default function Header() {
       >
         <div className="mobile-menu-content">
           <ul className="mobile-menu-list">
-            <li>
-              <a href="#home" onClick={handleLinkClick}>
-                Home
-              </a>
-            </li>
-            <li>
-              <a href="#about" onClick={handleLinkClick}>
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#tours" onClick={handleLinkClick}>
-                Tours
-              </a>
-            </li>
-            <li>
-              <a href="#testimonials" onClick={handleLinkClick}>
-                Testimonials
-              </a>
-            </li>
-            <li>
-              <a href="#contact" onClick={handleLinkClick}>
-                Contact
-              </a>
-            </li>
+            {navLinks.map((link) => (
+              <li key={link.id}>
+                <a href={`#${link.id}`} onClick={handleLinkClick}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
           </ul>
 
           <div className="mobile-menu-footer">
