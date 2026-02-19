@@ -23,6 +23,7 @@ const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'ht
 if (!MONGODB_URI) {
   throw new Error('MONGODB_URI is not configured');
 }
+// test
 
 // Middleware
 app.disable('x-powered-by');
