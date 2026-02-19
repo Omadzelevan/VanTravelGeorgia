@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "../styles/admin.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
+const API_BASE = (import.meta.env.VITE_API_BASE || "/api").replace(/\/+$/, "");
 const DEFAULT_ADMIN_KEY = import.meta.env.VITE_ADMIN_API_KEY || "";
 
 async function apiRequest(path, { method = "GET", body, adminKey } = {}) {

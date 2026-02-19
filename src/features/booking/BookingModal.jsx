@@ -2,6 +2,8 @@ import { useState } from "react";
 // import PropTypes from "prop-types";
 import "../../styles/bookingmodal.css";
 
+const API_BASE = (import.meta.env.VITE_API_BASE || "/api").replace(/\/+$/, "");
+
 export default function BookingModal({ isOpen, onClose, tour }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -14,6 +16,7 @@ export default function BookingModal({ isOpen, onClose, tour }) {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,21 +28,30 @@ export default function BookingModal({ isOpen, onClose, tour }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorText("");
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-
-      // Log booking data (replace with actual API call)
-      console.log("Booking submitted:", {
-        tour: tour.title,
-        ...formData,
-        totalPrice: tour.price * formData.guests,
+    try {
+      const response = await fetch(`${API_BASE}/bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tourId: tour.id,
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          date: formData.date,
+          guests: Number(formData.guests),
+          message: formData.message.trim(),
+        }),
       });
 
-      // Reset after 3 seconds
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Booking request failed");
+      }
+
+      setIsSuccess(true);
       setTimeout(() => {
         setIsSuccess(false);
         setFormData({
@@ -52,7 +64,13 @@ export default function BookingModal({ isOpen, onClose, tour }) {
         });
         onClose();
       }, 3000);
-    }, 1500);
+    } catch (error) {
+      setErrorText(
+        error.message || "Failed to submit booking. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const totalPrice = tour.price * formData.guests;
@@ -213,6 +231,7 @@ export default function BookingModal({ isOpen, onClose, tour }) {
                 * You will receive a confirmation email within 24 hours. Final
                 payment can be made on the tour day.
               </p>
+              {errorText ? <p className="booking-error">{errorText}</p> : null}
             </form>
           </>
         ) : (
@@ -235,45 +254,3 @@ export default function BookingModal({ isOpen, onClose, tour }) {
     </div>
   );
 }
-// BookingModal.jsx - Update handleSubmit
-const API_URL = "http://localhost:5000/api";
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-
-  try {
-    const response = await fetch(`${API_URL}/bookings`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        tourId: tour.id,
-        tourTitle: tour.title,
-        ...formData,
-        pricePerPerson: tour.price,
-        totalPrice: tour.price * formData.guests,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      setIsSuccess(true);
-      // Email automatically sent!
-    }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-// BookingModal.propTypes = {
-//   isOpen: PropTypes.bool.isRequired,
-//   onClose: PropTypes.func.isRequired,
-//   tour: PropTypes.shape({
-//     id: PropTypes.number.isRequired,
-//     title: PropTypes.string.isRequired,
-//     price: PropTypes.number.isRequired,
-//   }).isRequired,
-// };

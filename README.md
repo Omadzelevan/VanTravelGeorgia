@@ -1,34 +1,72 @@
-# React + Vite
+# VanTravelGeorgia
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React (Vite) frontend + Node/Express backend for tours, bookings, and admin management.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Frontend: React + Vite
+- Backend: Express + MongoDB (Mongoose)
+- Emails: Nodemailer (booking/admin notifications)
+- Static hosting: Netlify (frontend)
 
-## React Compiler
+## Local setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-
-## EmailJS setup (Contact form)
-
-Create a root `.env` file and set:
-
-```env
-VITE_EMAILJS_SERVICE_ID=your_service_id
-VITE_EMAILJS_TEMPLATE_ID=your_template_id
-VITE_EMAILJS_PUBLIC_KEY=your_public_key
+1. Install dependencies:
+```bash
+npm install
+```
+2. Create frontend env from `.env.example`.
+3. Create backend env from `backend/.env.example`.
+4. Run frontend:
+```bash
+npm run dev
+```
+5. Run backend (separate terminal):
+```bash
+npm run dev:server
 ```
 
-In your EmailJS template, map these params:
-- `from_name`
-- `from_email`
-- `phone`
-- `subject`
-- `message`
-- `sent_at`
+## Netlify deployment (frontend)
+
+1. Push repository to GitHub.
+2. In Netlify: `Add new site` -> `Import from Git`.
+3. Build settings:
+- Build command: `npm run build`
+- Publish directory: `dist`
+4. Set Netlify environment variables:
+- `VITE_API_BASE` = `https://api.yourdomain.com/api`
+- `VITE_EMAILJS_SERVICE_ID`
+- `VITE_EMAILJS_TEMPLATE_ID`
+- `VITE_EMAILJS_PUBLIC_KEY`
+- `VITE_ADMIN_API_KEY` (optional)
+5. Deploy.
+
+`netlify.toml` already includes SPA redirect so `/admin` and `/tour/:id` work after refresh.
+
+## Backend deployment (required)
+
+Netlify in this setup hosts only the frontend. Deploy backend separately (Railway/Render/Fly.io/VPS).
+
+Backend requirements:
+
+- Run `node backend/server.js`
+- Set env from `backend/.env.example`
+- Set `CLIENT_URLS` with all frontend origins:
+  - `https://<netlify-subdomain>.netlify.app`
+  - `https://yourdomain.com`
+  - `https://www.yourdomain.com`
+
+## Domain connection (Netlify)
+
+1. In Netlify: `Site settings` -> `Domain management` -> `Add custom domain`.
+2. Add both:
+- `yourdomain.com`
+- `www.yourdomain.com`
+3. Configure DNS records at your registrar as Netlify instructs.
+4. Wait for SSL provisioning and force HTTPS in Netlify.
+
+## Notes
+
+- Booking form now submits to `${VITE_API_BASE}/bookings`.
+- Admin panel uses `${VITE_API_BASE}`.
+- Contact form currently uses EmailJS directly from frontend.
