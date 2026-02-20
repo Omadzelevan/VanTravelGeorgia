@@ -170,6 +170,8 @@ export const sendContactEmail = async ({ name, email, phone, subject, message })
 
 export const sendBookingRequestEmail = async ({
   tourTitle,
+  pricePerPerson,
+  totalPrice,
   name,
   email,
   phone,
@@ -190,6 +192,8 @@ export const sendBookingRequestEmail = async ({
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Phone:</strong> ${phone}</p>
         <p><strong>Tour:</strong> ${tourTitle}</p>
+        <p><strong>Price Per Person:</strong> $${pricePerPerson}</p>
+        <p><strong>Total To Pay:</strong> $${totalPrice}</p>
         <p><strong>Date:</strong> ${date}</p>
         <p><strong>Guests:</strong> ${guests}</p>
         <hr>

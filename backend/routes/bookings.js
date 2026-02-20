@@ -20,6 +20,8 @@ router.post('/', rateLimit(8, 60_000), validateBooking, async (req, res) => {
       sendBookingRequestEmail({
         tourId: tour.id,
         tourTitle: tour.title,
+        pricePerPerson: tour.price,
+        totalPrice: tour.price * Number(guests),
         name: name.trim(),
         email: email.trim().toLowerCase(),
         phone: phone.trim(),
