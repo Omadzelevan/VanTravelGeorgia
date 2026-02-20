@@ -7,6 +7,8 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env'), quiet: true });
 dotenv.config({ path: path.resolve(process.cwd(), 'backend/.env'), quiet: true });
 
 let resendClient = null;
+const EMAIL_FROM = process.env.EMAIL_FROM || 'VanTravelGeorgia <onboarding@resend.dev>';
+
 function getResend() {
   if (resendClient) return resendClient;
   const apiKey = process.env.RESEND_API_KEY;
@@ -28,7 +30,7 @@ export const sendBookingConfirmation = async ({
 }) => {
   try {
     const { data, error } = await getResend().emails.send({
-      from: 'VanTravelGeorgia <bookings@resend.dev>',
+      from: EMAIL_FROM,
       to: [email],
       subject: `✅ Booking Confirmed - ${tourTitle}`,
       html: `
@@ -83,7 +85,7 @@ export const sendBookingConfirmation = async ({
 export const sendAdminNotification = async (booking) => {
   try {
     const { data, error } = await getResend().emails.send({
-      from: 'VanTravelGeorgia <bookings@resend.dev>',
+      from: EMAIL_FROM,
       to: [process.env.ADMIN_EMAIL || 'admin@vantravelgeorgia.com'],
       subject: `🧾 New Booking: ${booking.generateReference()}`,
       html: `
@@ -118,7 +120,7 @@ export const sendAdminNotification = async (booking) => {
 export const sendContactEmail = async ({ name, email, phone, subject, message }) => {
   const recipient = process.env.ADMIN_EMAIL || 'admin@vantravelgeorgia.com';
   const payload = {
-    from: 'Contact Form <contact@resend.dev>',
+    from: EMAIL_FROM,
     to: [recipient],
     replyTo: email,
     subject: `📧 Contact Form: ${subject}`,
@@ -177,7 +179,7 @@ export const sendBookingRequestEmail = async ({
 }) => {
   const recipient = process.env.ADMIN_EMAIL || 'admin@vantravelgeorgia.com';
   const payload = {
-    from: 'Booking Form <contact@resend.dev>',
+    from: EMAIL_FROM,
     to: [recipient],
     replyTo: email,
     subject: `🧾 Booking Request (${tourTitle})`,

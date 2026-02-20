@@ -24,6 +24,7 @@ cp backend/.env.example backend/.env
 3. Put real values in `backend/.env`:
 - `RESEND_API_KEY`
 - `ADMIN_EMAIL`
+- `EMAIL_FROM` (e.g. `VanTravelGeorgia <onboarding@resend.dev>`)
 
 4. Start backend:
 ```bash
