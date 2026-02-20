@@ -1,7 +1,9 @@
 import "../../styles/footer.css";
 import Logo from "../../assets/images/logo.png";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -13,8 +15,7 @@ export default function Footer() {
             <img src={Logo} alt="VanTravelGeorgia Logo" />
           </div>
           <p className="footer-description">
-            Explore the beauty of Georgia with comfort and freedom. 
-            From mountains to coast, we create unforgettable experiences.
+            {t.footer.description}
           </p>
           <div className="footer-social">
             <a href="#" aria-label="Facebook" className="social-link">
@@ -43,31 +44,31 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div className="footer-section">
-          <h3 className="footer-title">Quick Links</h3>
+          <h3 className="footer-title">{t.footer.quickLinks}</h3>
           <ul className="footer-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#tours">Our Tours</a></li>
-            <li><a href="#testimonials">Testimonials</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#home">{t.nav.home}</a></li>
+            <li><a href="#about">{t.footer.aboutUs}</a></li>
+            <li><a href="#tours">{t.footer.ourTours}</a></li>
+            <li><a href="#testimonials">{t.nav.testimonials}</a></li>
+            <li><a href="#contact">{t.nav.contact}</a></li>
           </ul>
         </div>
 
         {/* Popular Tours */}
         <div className="footer-section">
-          <h3 className="footer-title">Popular Tours</h3>
+          <h3 className="footer-title">{t.footer.popularTours}</h3>
           <ul className="footer-links">
-            <li><a href="#kazbegi">Kazbegi Mountains</a></li>
-            <li><a href="#wine">Wine Region Tours</a></li>
-            <li><a href="#batumi">Batumi & Black Sea</a></li>
-            <li><a href="#svaneti">Svaneti Adventure</a></li>
-            <li><a href="#custom">Custom Tours</a></li>
+            <li><a href="#kazbegi">{t.footer.kazbegi}</a></li>
+            <li><a href="#wine">{t.footer.wine}</a></li>
+            <li><a href="#batumi">{t.footer.batumi}</a></li>
+            <li><a href="#svaneti">{t.footer.svaneti}</a></li>
+            <li><a href="#custom">{t.footer.custom}</a></li>
           </ul>
         </div>
 
         {/* Contact Info */}
         <div className="footer-section">
-          <h3 className="footer-title">Contact Info</h3>
+          <h3 className="footer-title">{t.footer.contactInfo}</h3>
           <ul className="footer-contact">
             <li>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -87,7 +88,7 @@ export default function Footer() {
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-              <span>Tbilisi, Georgia</span>
+              <span>{t.contact.locationCity}</span>
             </li>
           </ul>
         </div>
@@ -96,11 +97,13 @@ export default function Footer() {
       {/* Footer Bottom */}
       <div className="footer-bottom">
         <div className="footer-bottom-content">
-          <p>&copy; {currentYear} VanTravelGeorgia. All rights reserved.</p>
+          <p>
+            &copy; {currentYear} VanTravelGeorgia. {t.footer.rights}
+          </p>
           <div className="footer-bottom-links">
-            <a href="#privacy">Privacy Policy</a>
+            <a href="#privacy">{t.footer.privacy}</a>
             <span>•</span>
-            <a href="#terms">Terms of Service</a>
+            <a href="#terms">{t.footer.terms}</a>
           </div>
         </div>
       </div>

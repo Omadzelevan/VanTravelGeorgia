@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import "../styles/testimonials.css";
+import { useLanguage } from "../context/LanguageContext";
 export default function Testimonials() {
+  const { t } = useLanguage();
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -104,10 +106,8 @@ export default function Testimonials() {
   return (
     <section className="testimonials" id="testimonials">
       <div className="testimonials-header">
-        <h2>What Our Travelers Say</h2>
-        <p className="testimonials-subtitle">
-          Real experiences from people who explored Georgia with us
-        </p>
+        <h2>{t.testimonials.title}</h2>
+        <p className="testimonials-subtitle">{t.testimonials.subtitle}</p>
       </div>
 
       <div className="testimonials-scroll-container" ref={scrollRef}>

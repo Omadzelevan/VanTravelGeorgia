@@ -9,6 +9,7 @@ import Contact from "./pages/Contact";
 import Testimonials from "./pages/Testimonials";
 import Admin from "./pages/Admin";
 import Footer from "./components/layout/Footer";
+import { LanguageProvider } from "./context/LanguageContext";
 
 function HomePage() {
   return (
@@ -25,16 +26,18 @@ function HomePage() {
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Header />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/tour/:id" element={<TourDetail />} />
-          <Route path="/admin" element={<Admin />} />
-        </Routes>
-      </div>
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <div className="App">
+          <Header />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/tour/:id" element={<TourDetail />} />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </div>
+      </Router>
+    </LanguageProvider>
   );
 }
 

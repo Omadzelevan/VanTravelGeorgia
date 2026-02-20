@@ -1,40 +1,31 @@
 import "../styles/about.css";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function About() {
+  const { t } = useLanguage();
   return (
     <section className="about" id="about">
       <div className="about-container">
         <div className="about-content">
-          <h2>About VanTravelGeorgia</h2>
+          <h2>{t.about.title}</h2>
           <div className="about-text">
-            <p>
-              At VanTravelGeorgia, we believe in exploring Georgia with comfort
-              and freedom. Our private tours, mountain adventures, wine
-              journeys, and cultural experiences are designed to give you an
-              unforgettable journey through one of the world's most beautiful
-              destinations.
-            </p>
-            <p>
-              Our mission is to make your travel safe, enjoyable, and full of
-              authentic Georgian experiences. From the peaks of Kazbegi to the
-              coastal beauty of Batumi, we take care of every detail so you can
-              focus on the adventure.
-            </p>
+            <p>{t.about.p1}</p>
+            <p>{t.about.p2}</p>
             <div className="about-features">
               <div className="feature">
                 <span className="feature-icon">🚐</span>
-                <h3>Comfortable Travel</h3>
-                <p>Modern, well-maintained vehicles for your journey</p>
+                <h3>{t.about.f1Title}</h3>
+                <p>{t.about.f1Text}</p>
               </div>
               <div className="feature">
                 <span className="feature-icon">🏔️</span>
-                <h3>Expert Guides</h3>
-                <p>Local knowledge and insider perspectives</p>
+                <h3>{t.about.f2Title}</h3>
+                <p>{t.about.f2Text}</p>
               </div>
               <div className="feature">
                 <span className="feature-icon">🍷</span>
-                <h3>Authentic Experiences</h3>
-                <p>Genuine Georgian culture and traditions</p>
+                <h3>{t.about.f3Title}</h3>
+                <p>{t.about.f3Text}</p>
               </div>
             </div>
           </div>

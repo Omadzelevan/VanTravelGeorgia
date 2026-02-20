@@ -375,6 +375,10 @@
     grid-template-columns: 1fr;
   }
 
+  .contact-form-wrapper {
+    margin-top: 9.5rem;
+  }
+
   .social-icons {
     justify-content: flex-start;
   }
@@ -388,6 +392,10 @@
 
   .contact-container {
     gap: 6rem;
+  }
+
+  .contact-form-wrapper {
+    margin-top: 9.5rem;
   }
 }
 

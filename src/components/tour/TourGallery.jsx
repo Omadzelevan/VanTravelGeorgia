@@ -3,8 +3,10 @@ import ToursCard from "./TourCard";
 import TourFilters from "./TourFilters";
 import BookingModal from "../../features/booking/BookingModal";
 import "../../styles/tours.css";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function TourGallery() {
+  const { t } = useLanguage();
   const [filter, setFilter] = useState("all");
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedTour, setSelectedTour] = useState(null);
@@ -73,7 +75,7 @@ export default function TourGallery() {
 
   return (
     <section className="tour-gallery" id="tours">
-      <h2>Our Tours</h2>
+      <h2>{t.tours.title}</h2>
       <TourFilters activeFilter={filter} setFilter={setFilter} />
       <div className="tour-grid">
         {filteredTours.map((tour) => (

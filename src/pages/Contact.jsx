@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "../styles/contact.css";
+import { useLanguage } from "../context/LanguageContext";
 
-const EMAILJS_ENDPOINT = "https://api.emailjs.com/api/v1.0/email/send";
+const API_BASE = (import.meta.env.VITE_API_BASE || "/api").replace(/\/+$/, "");
 
 const initialFormData = {
   name: "",
@@ -12,6 +13,7 @@ const initialFormData = {
 };
 
 export default function Contact() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: "", text: "" });
@@ -29,55 +31,54 @@ export default function Contact() {
     event.preventDefault();
     setStatus({ type: "", text: "" });
 
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
-    if (!serviceId || !templateId || !publicKey) {
-      setStatus({
-        type: "error",
-        text: "Email service is not configured yet. Please try again later.",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(EMAILJS_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          service_id: serviceId,
-          template_id: templateId,
-          user_id: publicKey,
-          template_params: {
-            from_name: formData.name.trim(),
-            from_email: formData.email.trim(),
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15_000);
+      let response;
+      try {
+        response = await fetch(`${API_BASE}/contact`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          signal: controller.signal,
+          body: JSON.stringify({
+            name: formData.name.trim(),
+            email: formData.email.trim(),
             phone: formData.phone.trim(),
             subject: formData.subject,
             message: formData.message.trim(),
-            sent_at: new Date().toISOString(),
-          },
-        }),
-      });
+          }),
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
 
+      const data = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error("EmailJS request failed");
+        const validationDetails = Array.isArray(data.errors)
+          ? data.errors.join(", ")
+          : "";
+        throw new Error(
+          validationDetails || data.message || "Failed to send message"
+        );
       }
 
       setStatus({
         type: "success",
-        text: "Message sent successfully. We will contact you soon.",
+        text: data.message || t.contact.success,
       });
       setFormData(initialFormData);
     } catch (error) {
       console.error("Failed to send contact message:", error);
       setStatus({
         type: "error",
-        text: "Failed to send message. Please try again in a moment.",
+        text:
+          error.name === "AbortError"
+            ? t.contact.timeout
+            : error.message || t.contact.fail,
       });
     } finally {
       setIsSubmitting(false);
@@ -88,39 +89,36 @@ export default function Contact() {
     <section className="contact" id="contact">
       <div className="contact-container">
         <div className="contact-content">
-          <h2>Get in Touch</h2>
-          <p className="contact-intro">
-            Ready to start your Georgian adventure? We'd love to hear from you!
-            Reach out with any questions or to book your personalized tour.
-          </p>
+          <h2>{t.contact.title}</h2>
+          <p className="contact-intro">{t.contact.intro}</p>
 
           <div className="contact-info">
             <div className="info-card">
               <span className="info-icon">📞</span>
-              <h3>Phone</h3>
+              <h3>{t.contact.phone}</h3>
               <a href="tel:+995555123456">+995 555 123 456</a>
-              <p>Mon-Sun: 9:00 AM - 8:00 PM</p>
+              <p>{t.contact.phoneHours}</p>
             </div>
 
             <div className="info-card">
               <span className="info-icon">✉️</span>
-              <h3>Email</h3>
+              <h3>{t.contact.email}</h3>
               <a href="mailto:info@vantravelgeorgia.com">
                 info@vantravelgeorgia.com
               </a>
-              <p>We reply within 24 hours</p>
+              <p>{t.contact.emailReply}</p>
             </div>
 
             <div className="info-card">
               <span className="info-icon">📍</span>
-              <h3>Location</h3>
-              <p>Tbilisi, Georgia</p>
-              <p>Serving all of Georgia</p>
+              <h3>{t.contact.location}</h3>
+              <p>{t.contact.locationCity}</p>
+              <p>{t.contact.locationCoverage}</p>
             </div>
           </div>
 
           <div className="social-links">
-            <h3>Follow Us</h3>
+            <h3>{t.contact.followUs}</h3>
             <div className="social-icons">
               <a href="#" aria-label="Facebook" className="social-icon">
                 <svg
@@ -161,7 +159,7 @@ export default function Contact() {
 
         <div className="contact-form-wrapper">
           <form className="contact-form" onSubmit={handleSubmit}>
-            <h3>Send us a Message</h3>
+            <h3>{t.contact.formTitle}</h3>
             {status.text ? (
               <p
                 className={`form-alert ${
@@ -174,12 +172,12 @@ export default function Contact() {
             ) : null}
 
             <div className="form-group">
-              <label htmlFor="name">Your Name</label>
+              <label htmlFor="name">{t.contact.nameLabel}</label>
               <input
                 type="text"
                 id="name"
                 name="name"
-                placeholder="John Doe"
+                placeholder={t.contact.namePlaceholder}
                 value={formData.name}
                 onChange={handleChange}
                 required
@@ -187,12 +185,12 @@ export default function Contact() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="email">Email Address</label>
+              <label htmlFor="email">{t.contact.emailLabel}</label>
               <input
                 type="email"
                 id="email"
                 name="email"
-                placeholder="john@example.com"
+                placeholder={t.contact.emailPlaceholder}
                 value={formData.email}
                 onChange={handleChange}
                 required
@@ -200,19 +198,19 @@ export default function Contact() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="phone">Phone Number</label>
+              <label htmlFor="phone">{t.contact.phoneLabel}</label>
               <input
                 type="tel"
                 id="phone"
                 name="phone"
-                placeholder="+995 555 123 456"
+                placeholder={t.contact.phonePlaceholder}
                 value={formData.phone}
                 onChange={handleChange}
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="subject">Subject</label>
+              <label htmlFor="subject">{t.contact.subjectLabel}</label>
               <select
                 id="subject"
                 name="subject"
@@ -220,21 +218,21 @@ export default function Contact() {
                 onChange={handleChange}
                 required
               >
-                <option value="">Select a topic</option>
-                <option value="booking">Tour Booking</option>
-                <option value="custom">Custom Tour Request</option>
-                <option value="question">General Question</option>
-                <option value="feedback">Feedback</option>
+                <option value="">{t.contact.topicPlaceholder}</option>
+                <option value="booking">{t.contact.topicBooking}</option>
+                <option value="custom">{t.contact.topicCustom}</option>
+                <option value="question">{t.contact.topicQuestion}</option>
+                <option value="feedback">{t.contact.topicFeedback}</option>
               </select>
             </div>
 
             <div className="form-group">
-              <label htmlFor="message">Your Message</label>
+              <label htmlFor="message">{t.contact.messageLabel}</label>
               <textarea
                 id="message"
                 name="message"
                 rows="5"
-                placeholder="Tell us about your travel plans..."
+                placeholder={t.contact.messagePlaceholder}
                 value={formData.message}
                 onChange={handleChange}
                 required
@@ -242,7 +240,7 @@ export default function Contact() {
             </div>
 
             <button type="submit" className="submit-btn" disabled={isSubmitting}>
-              <span>{isSubmitting ? "Sending..." : "Send Message"}</span>
+              <span>{isSubmitting ? t.contact.sending : t.contact.send}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"

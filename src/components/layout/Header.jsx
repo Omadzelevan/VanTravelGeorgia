@@ -1,16 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/globals.css";
 import "../../styles/mobilemenu.css";
 import Logo from "../../assets/images/logo.png";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function Header() {
+  const { language, setLanguage, t } = useLanguage();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [language, setLanguage] = useState("en");
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const languageRef = useRef(null);
+
+  const scrollToSection = (sectionId, smooth = true) => {
+    const element = document.getElementById(sectionId);
+    if (!element) return false;
+    const headerOffset = 90;
+    const top =
+      element.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+    window.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
+    setActiveSection(sectionId);
+    return true;
+  };
 
   // Add scroll effect to header
   useEffect(() => {
+    if (location.pathname !== "/") return;
     const handleScroll = () => {
       if (window.scrollY > 50) {
         setIsScrolled(true);
@@ -36,7 +54,17 @@ export default function Header() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (location.pathname !== "/") return;
+    const hashSection = location.hash.replace("#", "");
+    if (!hashSection) return;
+    // Wait one frame to ensure target section is rendered before scrolling.
+    requestAnimationFrame(() => {
+      scrollToSection(hashSection, false);
+    });
+  }, [location.pathname, location.hash]);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -50,9 +78,34 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  const handleLanguageChange = (e) => {
-    setLanguage(e.target.value);
-    console.log("Language changed to:", e.target.value);
+  useEffect(() => {
+    const handleDocumentClick = (event) => {
+      if (!languageRef.current?.contains(event.target)) {
+        setIsLanguageOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setIsLanguageOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleDocumentClick);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleDocumentClick);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  const handleLanguageToggle = () => {
+    setIsLanguageOpen((previous) => !previous);
+  };
+
+  const handleLanguageSelect = (value) => {
+    setLanguage(value);
+    setIsLanguageOpen(false);
   };
 
   const handleBurgerClick = () => {
@@ -61,21 +114,48 @@ export default function Header() {
 
   const handleLinkClick = () => {
     setMenuOpen(false);
+    setIsLanguageOpen(false);
+  };
+
+  const handleNavClick = (event, sectionId) => {
+    event.preventDefault();
+    setMenuOpen(false);
+    setIsLanguageOpen(false);
+
+    if (location.pathname === "/") {
+      scrollToSection(sectionId, true);
+      window.history.replaceState(null, "", `/#${sectionId}`);
+      return;
+    }
+
+    navigate(`/#${sectionId}`);
   };
 
   const navLinks = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "tours", label: "Tours" },
-    { id: "testimonials", label: "Testimonials" },
-    { id: "contact", label: "Contact" },
+    { id: "home", label: t.nav.home },
+    { id: "about", label: t.nav.about },
+    { id: "tours", label: t.nav.tours },
+    { id: "testimonials", label: t.nav.testimonials },
+    { id: "contact", label: t.nav.contact },
   ];
+
+  const languageOptions = [
+    { value: "en", label: "EN", flag: "🇬🇧" },
+    { value: "ge", label: "GE", flag: "🇬🇪" },
+  ];
+  const selectedLanguage =
+    languageOptions.find((option) => option.value === language) ||
+    languageOptions[0];
 
   return (
     <>
       <header className={`header ${isScrolled ? "scrolled" : ""}`}>
         <div className="logo">
-          <a href="#home" aria-label="VanTravelGeorgia Home">
+          <a
+            href="#home"
+            aria-label="VanTravelGeorgia Home"
+            onClick={(e) => handleNavClick(e, "home")}
+          >
             <img src={Logo} alt="VanTravelGeorgia Logo" />
           </a>
         </div>
@@ -87,6 +167,7 @@ export default function Header() {
               <li key={link.id}>
                 <a
                   href={`#${link.id}`}
+                  onClick={(e) => handleNavClick(e, link.id)}
                   className={`nav-link ${
                     activeSection === link.id ? "active" : ""
                   }`}
@@ -100,19 +181,52 @@ export default function Header() {
 
         {/* Right Side Actions */}
         <div className="nav">
-          <div className="lang-chose">
-            <label htmlFor="language-select" className="visually-hidden">
-              Select Language
+          <div className="lang-chose" ref={languageRef}>
+            <label id="language-menu-label" className="visually-hidden">
+              {t.nav.selectLanguage}
             </label>
-            <select
-              id="language-select"
-              value={language}
-              onChange={handleLanguageChange}
-              aria-label="Choose language"
+            <button
+              type="button"
+              className={`lang-trigger ${isLanguageOpen ? "open" : ""}`}
+              onClick={handleLanguageToggle}
+              aria-haspopup="listbox"
+              aria-expanded={isLanguageOpen}
+              aria-labelledby="language-menu-label"
             >
-              <option value="en">🇬🇧 EN</option>
-              <option value="ge">🇬🇪 GE</option>
-            </select>
+              <span className="lang-current">
+                <span className="lang-flag" aria-hidden="true">
+                  {selectedLanguage.flag}
+                </span>
+                <span>{selectedLanguage.label}</span>
+              </span>
+              <span className="lang-caret" aria-hidden="true">
+                ▾
+              </span>
+            </button>
+
+            <div
+              className={`lang-menu ${isLanguageOpen ? "open" : ""}`}
+              role="listbox"
+              aria-label={t.nav.chooseLanguage}
+            >
+              {languageOptions.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="option"
+                  aria-selected={language === option.value}
+                  className={`lang-option ${
+                    language === option.value ? "active" : ""
+                  }`}
+                  onClick={() => handleLanguageSelect(option.value)}
+                >
+                  <span className="lang-flag" aria-hidden="true">
+                    {option.flag}
+                  </span>
+                  <span>{option.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <button
@@ -144,7 +258,10 @@ export default function Header() {
           <ul className="mobile-menu-list">
             {navLinks.map((link) => (
               <li key={link.id}>
-                <a href={`#${link.id}`} onClick={handleLinkClick}>
+                <a
+                  href={`#${link.id}`}
+                  onClick={(e) => handleNavClick(e, link.id)}
+                >
                   {link.label}
                 </a>
               </li>
@@ -152,7 +269,7 @@ export default function Header() {
           </ul>
 
           <div className="mobile-menu-footer">
-            <p>Follow us on social media</p>
+            <p>{t.nav.mobileFollow}</p>
             <div className="mobile-social-icons">
               <a href="#" aria-label="Facebook">
                 <svg

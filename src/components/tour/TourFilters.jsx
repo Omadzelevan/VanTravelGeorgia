@@ -1,12 +1,14 @@
 import "../../styles/tourfilter.css";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function TourFilters({ activeFilter, setFilter }) {
+  const { t } = useLanguage();
   const filters = [
-    { id: "all", label: "All" },
-    { id: "mountain", label: "Mountain" },
-    { id: "wine", label: "Wine" },
-    { id: "sea", label: "Sea" },
-    { id: "culture", label: "Culture" },
+    { id: "all", label: t.tours.filters.all },
+    { id: "mountain", label: t.tours.filters.mountain },
+    { id: "wine", label: t.tours.filters.wine },
+    { id: "sea", label: t.tours.filters.sea },
+    { id: "culture", label: t.tours.filters.culture },
   ];
 
   return (

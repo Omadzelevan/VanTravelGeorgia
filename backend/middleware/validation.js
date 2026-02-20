@@ -48,12 +48,13 @@ export const validateBooking = (req, res, next) => {
 };
 
 export const validateContact = (req, res, next) => {
-  const { name, email, subject, message } = req.body;
+  const { name, email, phone, subject, message } = req.body;
 
   const errors = [];
 
   if (!name || name.trim().length < 2) errors.push('Valid name is required');
   if (!email || !isValidEmail(email)) errors.push('Valid email is required');
+  if (phone && phone.trim().length < 8) errors.push('Valid phone number is required');
   if (!subject || subject.trim().length < 3) errors.push('Subject is required');
   if (!message || message.trim().length < 10) errors.push('Message must be at least 10 characters');
 
