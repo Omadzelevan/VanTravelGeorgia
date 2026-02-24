@@ -4,6 +4,7 @@ import TourFilters from "./TourFilters";
 import BookingModal from "../../features/booking/BookingModal";
 import "../../styles/tours.css";
 import { useLanguage } from "../../context/LanguageContext";
+import { toursData } from "../../data/tours";
 
 export default function TourGallery() {
   const { t } = useLanguage();
@@ -11,83 +12,7 @@ export default function TourGallery() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedTour, setSelectedTour] = useState(null);
 
-  const tours = [
-    {
-      id: 1,
-      title: "Kazbegi Mountain Escape",
-      location: "Stepantsminda, Georgia",
-      duration: "2 Days",
-      price: 180,
-      category: "mountain",
-      image:
-        "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=800",
-      gallery: [
-        "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/1670765/pexels-photo-1670765.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/2166711/pexels-photo-2166711.jpeg?auto=compress&cs=tinysrgb&w=800",
-      ],
-    },
-    {
-      id: 2,
-      title: "Kakheti Wine Journey",
-      location: "Kakheti Region",
-      duration: "1 Day",
-      price: 120,
-      category: "wine",
-      image:
-        "https://images.pexels.com/photos/367233/pexels-photo-367233.jpeg?auto=compress&cs=tinysrgb&w=800",
-      gallery: [
-        "https://images.pexels.com/photos/367233/pexels-photo-367233.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/2467506/pexels-photo-2467506.jpeg?auto=compress&cs=tinysrgb&w=800",
-      ],
-    },
-    {
-      id: 3,
-      title: "Batumi Coastal Tour",
-      location: "Batumi, Georgia",
-      duration: "2 Days",
-      price: 150,
-      category: "sea",
-      image:
-        "https://images.pexels.com/photos/460621/pexels-photo-460621.jpeg?auto=compress&cs=tinysrgb&w=800",
-      gallery: [
-        "https://images.pexels.com/photos/460621/pexels-photo-460621.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/1007657/pexels-photo-1007657.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=800",
-      ],
-    },
-    {
-      id: 4,
-      title: "Ushguli Adventure",
-      location: "Svaneti, Georgia",
-      duration: "3 Days",
-      price: 220,
-      category: "culture",
-      image:
-        "https://images.pexels.com/photos/417344/pexels-photo-417344.jpeg?auto=compress&cs=tinysrgb&w=800",
-      gallery: [
-        "https://images.pexels.com/photos/417344/pexels-photo-417344.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/2166553/pexels-photo-2166553.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/1659438/pexels-photo-1659438.jpeg?auto=compress&cs=tinysrgb&w=800",
-      ],
-    },
-    {
-      id: 5,
-      title: "Tbilisi City Vibes",
-      location: "Tbilisi, Georgia",
-      duration: "1 Day",
-      price: 100,
-      category: "city",
-      image:
-        "https://images.pexels.com/photos/3894365/pexels-photo-3894365.jpeg?auto=compress&cs=tinysrgb&w=800",
-      gallery: [
-        "https://images.pexels.com/photos/3894365/pexels-photo-3894365.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/2467506/pexels-photo-2467506.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg?auto=compress&cs=tinysrgb&w=800",
-      ],
-    },
-  ];
+  const tours = toursData;
 
   const filteredTours =
     filter === "all" ? tours : tours.filter((tour) => tour.category === filter);

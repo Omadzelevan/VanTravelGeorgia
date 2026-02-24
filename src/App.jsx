@@ -16,10 +16,17 @@ import Testimonials from "./pages/Testimonials";
 import Admin from "./pages/Admin";
 import Footer from "./components/layout/Footer";
 import { LanguageProvider } from "./context/LanguageContext";
+import Seo from "./components/seo/Seo";
 
 function HomePage() {
   return (
     <>
+      <Seo
+        title="VanTravelGeorgia | Private Tours in Georgia"
+        description="Private tours across Georgia: mountains, wine regions, coastal routes and cultural adventures with VanTravelGeorgia."
+        path="/"
+        image="/images/logo.png"
+      />
       <Home />
       <About />
       <TourGallery />
@@ -44,13 +51,7 @@ function ScrollToTop() {
 
   useLayoutEffect(() => {
     if (location.hash) return;
-    window.scrollTo(0, 0);
-    const rafId = window.requestAnimationFrame(() => window.scrollTo(0, 0));
-    const timeoutId = window.setTimeout(() => window.scrollTo(0, 0), 0);
-    return () => {
-      window.cancelAnimationFrame(rafId);
-      window.clearTimeout(timeoutId);
-    };
+    window.scrollTo({ top: 0, behavior: "auto" });
   }, [location.pathname, location.hash]);
 
   return null;
@@ -66,7 +67,21 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/tour/:id" element={<TourDetail />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route
+              path="/admin"
+              element={
+                <>
+                  <Seo
+                    title="Admin | VanTravelGeorgia"
+                    description="Admin dashboard for VanTravelGeorgia."
+                    path="/admin"
+                    noindex
+                    image="/images/logo.png"
+                  />
+                  <Admin />
+                </>
+              }
+            />
           </Routes>
         </div>
       </Router>

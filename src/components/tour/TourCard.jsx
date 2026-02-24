@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 // import PropTypes from "prop-types";
 
 export default function ToursCard({
@@ -12,7 +12,6 @@ export default function ToursCard({
   images,
   onQuickBook,
 }) {
-  const navigate = useNavigate();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const cardImages = images?.length ? images : [image];
   const currentImageIndex = cardImages.length
@@ -35,27 +34,8 @@ export default function ToursCard({
     }
   };
 
-  const handleOpenDetails = (e) => {
-    // Keep browser defaults for new-tab/middle-click actions.
-    if (
-      e.button !== 0 ||
-      e.metaKey ||
-      e.ctrlKey ||
-      e.shiftKey ||
-      e.altKey
-    ) {
-      return;
-    }
-
-    e.preventDefault();
-    navigate(`/tour/${id}`);
-    window.scrollTo(0, 0);
-    requestAnimationFrame(() => window.scrollTo(0, 0));
-    setTimeout(() => window.scrollTo(0, 0), 0);
-  };
-
   return (
-    <Link to={`/tour/${id}`} className="tour-card" onClick={handleOpenDetails}>
+    <Link to={`/tour/${id}`} className="tour-card">
       <div className="tour-image">
         <div className="tour-image-slides" aria-hidden="true">
           {cardImages.map((cardImage, index) => (

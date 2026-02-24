@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vantravelgeorgia.netlify.app/sitemap.xml
