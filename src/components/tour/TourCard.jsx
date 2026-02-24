@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 // import PropTypes from "prop-types";
 
 export default function ToursCard({
@@ -8,8 +9,24 @@ export default function ToursCard({
   duration,
   price,
   image,
+  images,
   onQuickBook,
 }) {
+  const navigate = useNavigate();
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const cardImages = images?.length ? images : [image];
+  const currentImageIndex = cardImages.length
+    ? activeImageIndex % cardImages.length
+    : 0;
+
+  useEffect(() => {
+    if (cardImages.length < 2) return undefined;
+    const intervalId = setInterval(() => {
+      setActiveImageIndex((previous) => (previous + 1) % cardImages.length);
+    }, 5500);
+    return () => clearInterval(intervalId);
+  }, [cardImages.length, id]);
+
   const handleQuickBook = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -18,10 +35,41 @@ export default function ToursCard({
     }
   };
 
+  const handleOpenDetails = (e) => {
+    // Keep browser defaults for new-tab/middle-click actions.
+    if (
+      e.button !== 0 ||
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey
+    ) {
+      return;
+    }
+
+    e.preventDefault();
+    navigate(`/tour/${id}`);
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => window.scrollTo(0, 0));
+    setTimeout(() => window.scrollTo(0, 0), 0);
+  };
+
   return (
-    <Link to={`/tour/${id}`} className="tour-card">
+    <Link to={`/tour/${id}`} className="tour-card" onClick={handleOpenDetails}>
       <div className="tour-image">
-        <img src={image} alt={title} loading="lazy" />
+        <div className="tour-image-slides" aria-hidden="true">
+          {cardImages.map((cardImage, index) => (
+            <img
+              key={`${id}-${cardImage}-${index}`}
+              src={cardImage}
+              alt={title}
+              loading="lazy"
+              className={`tour-image-slide ${
+                index === currentImageIndex ? "active" : ""
+              }`}
+            />
+          ))}
+        </div>
         <div className="tour-overlay">
           <button className="quick-book-btn" onClick={handleQuickBook}>
             Quick Book

@@ -1,6 +1,9 @@
 import express from 'express';
 import { rateLimit, validateBooking } from '../middleware/validation.js';
-import { sendBookingRequestEmail } from '../utils/email.js';
+import {
+  sendBookingConfirmation,
+  sendBookingRequestEmail
+} from '../utils/email.js';
 import { getTourById } from '../utils/toursCatalog.js';
 
 const router = express.Router();
@@ -9,6 +12,13 @@ router.post('/', rateLimit(8, 60_000), validateBooking, async (req, res) => {
   try {
     const { tourId, name, email, phone, date, guests, message } = req.body;
     const tour = getTourById(tourId);
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPhone = phone.trim();
+    const normalizedGuests = Number(guests);
+    const totalPrice = tour ? tour.price * normalizedGuests : 0;
+    const bookingReference = `VTG-${Date.now().toString().slice(-8)}`;
+
     if (!tour) {
       return res.status(400).json({
         success: false,
@@ -17,18 +27,29 @@ router.post('/', rateLimit(8, 60_000), validateBooking, async (req, res) => {
     }
 
     await Promise.race([
-      sendBookingRequestEmail({
-        tourId: tour.id,
-        tourTitle: tour.title,
-        pricePerPerson: tour.price,
-        totalPrice: tour.price * Number(guests),
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        phone: phone.trim(),
-        date,
-        guests: Number(guests),
-        message: (message || '').trim()
-      }),
+      Promise.all([
+        sendBookingRequestEmail({
+          tourId: tour.id,
+          tourTitle: tour.title,
+          pricePerPerson: tour.price,
+          totalPrice,
+          name: normalizedName,
+          email: normalizedEmail,
+          phone: normalizedPhone,
+          date,
+          guests: normalizedGuests,
+          message: (message || '').trim()
+        }),
+        sendBookingConfirmation({
+          email: normalizedEmail,
+          name: normalizedName,
+          tourTitle: tour.title,
+          date,
+          guests: normalizedGuests,
+          totalPrice,
+          reference: bookingReference
+        })
+      ]),
       new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Email send timed out')), 15_000)
       )
@@ -36,7 +57,8 @@ router.post('/', rateLimit(8, 60_000), validateBooking, async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Message sent successfully'
+      message: 'Booking confirmed and email notification sent',
+      reference: bookingReference
     });
   } catch (error) {
     console.error('Booking send error:', error);

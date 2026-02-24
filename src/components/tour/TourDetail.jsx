@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import BookingModal from "../../features/booking/BookingModal";
 import "../../styles/tourdetail.css";
 export default function TourDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   // Tour data (same as in TourGallery)
   const tours = [
@@ -286,6 +287,28 @@ export default function TourDetail() {
   ];
 
   const tour = tours.find((t) => t.id === parseInt(id));
+  const heroImages = tour?.gallery?.length
+    ? tour.gallery
+    : tour?.image
+    ? [tour.image]
+    : [];
+  const currentImageIndex = heroImages.length
+    ? activeImageIndex % heroImages.length
+    : 0;
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+    const rafId = window.requestAnimationFrame(() => window.scrollTo(0, 0));
+    return () => window.cancelAnimationFrame(rafId);
+  }, [id]);
+npm run de
+  useEffect(() => {
+    if (heroImages.length < 2) return undefined;
+    const intervalId = setInterval(() => {
+      setActiveImageIndex((previous) => (previous + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, [heroImages.length, id]);
 
   if (!tour) {
     return (
@@ -300,13 +323,34 @@ export default function TourDetail() {
     setIsBookingOpen(true);
   };
 
+  const handlePrevImage = () => {
+    const size = heroImages.length;
+    if (!size) return;
+    setActiveImageIndex((previous) => ((previous % size) - 1 + size) % size);
+  };
+
+  const handleNextImage = () => {
+    const size = heroImages.length;
+    if (!size) return;
+    setActiveImageIndex((previous) => (previous + 1) % size);
+  };
+
   return (
     <div className="tour-detail">
       {/* Hero Section */}
-      <div
-        className="tour-detail-hero"
-        style={{ backgroundImage: `url(${tour.image})` }}
-      >
+      <div className="tour-detail-hero">
+        <div className="tour-detail-hero-slides" aria-hidden="true">
+          {heroImages.map((img, index) => (
+            <img
+              key={img}
+              src={img}
+              alt=""
+              className={`tour-detail-hero-slide ${
+                index === currentImageIndex ? "active" : ""
+              }`}
+            />
+          ))}
+        </div>
         <div className="tour-detail-hero-overlay">
           <button
             className="back-button"
@@ -323,6 +367,40 @@ export default function TourDetail() {
               <span>⏱️ {tour.duration}</span>
               <span className="tour-price">${tour.price} per person</span>
             </div>
+          </div>
+
+          <div className="tour-detail-hero-gallery">
+            <button
+              type="button"
+              className="hero-gallery-nav"
+              onClick={handlePrevImage}
+              aria-label="Previous hero image"
+            >
+              ←
+            </button>
+            <div className="hero-gallery-thumbs">
+              {heroImages.map((img, index) => (
+                <button
+                  key={`${img}-${index}`}
+                  type="button"
+                  className={`hero-thumb ${
+                    index === currentImageIndex ? "active" : ""
+                  }`}
+                  onClick={() => setActiveImageIndex(index)}
+                  aria-label={`Show image ${index + 1}`}
+                >
+                  <img src={img} alt={`${tour.title} view ${index + 1}`} />
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="hero-gallery-nav"
+              onClick={handleNextImage}
+              aria-label="Next hero image"
+            >
+              →
+            </button>
           </div>
         </div>
       </div>

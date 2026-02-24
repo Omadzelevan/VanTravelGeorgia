@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import { useEffect, useLayoutEffect } from "react";
 import "./App.css";
 import Header from "./components/layout/Header";
 import Home from "./pages/Home";
@@ -24,10 +30,37 @@ function HomePage() {
   );
 }
 
+function ScrollToTop() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!("scrollRestoration" in window.history)) return;
+    const previous = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    return () => {
+      window.history.scrollRestoration = previous;
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    if (location.hash) return;
+    window.scrollTo(0, 0);
+    const rafId = window.requestAnimationFrame(() => window.scrollTo(0, 0));
+    const timeoutId = window.setTimeout(() => window.scrollTo(0, 0), 0);
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [location.pathname, location.hash]);
+
+  return null;
+}
+
 function App() {
   return (
     <LanguageProvider>
       <Router>
+        <ScrollToTop />
         <div className="App">
           <Header />
           <Routes>
