@@ -5,6 +5,13 @@ import "../../styles/tourdetail.css";
 import Seo from "../seo/Seo";
 import { toursData } from "../../data/tours";
 import { useLanguage } from "../../context/LanguageContext";
+
+function buildPexelsSrcSet(url) {
+  if (!url.includes("pexels.com")) return undefined;
+  return [640, 960, 1280, 1600]
+    .map((width) => `${url.replace(/w=\d+/, `w=${width}`)} ${width}w`)
+    .join(", ");
+}
 export default function TourDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -93,7 +100,11 @@ export default function TourDetail() {
             <img
               key={img}
               src={img}
+              srcSet={buildPexelsSrcSet(img)}
+              sizes="100vw"
               alt=""
+              loading={index === 0 ? "eager" : "lazy"}
+              decoding="async"
               className={`tour-detail-hero-slide ${
                 index === currentImageIndex ? "active" : ""
               }`}
@@ -140,7 +151,14 @@ export default function TourDetail() {
                   onClick={() => setActiveImageIndex(index)}
                   aria-label={`Show image ${index + 1}`}
                 >
-                  <img src={img} alt={`${tour.title} view ${index + 1}`} />
+                  <img
+                    src={img}
+                    srcSet={buildPexelsSrcSet(img)}
+                    sizes="96px"
+                    alt={`${tour.title} view ${index + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </button>
               ))}
             </div>
@@ -218,8 +236,11 @@ export default function TourDetail() {
                 <img
                   key={index}
                   src={img}
+                  srcSet={buildPexelsSrcSet(img)}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   alt={`${tour.title} - ${index + 1}`}
                   loading="lazy"
+                  decoding="async"
                 />
               ))}
             </div>

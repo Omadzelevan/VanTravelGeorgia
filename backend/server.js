@@ -6,6 +6,7 @@ import path from 'path';
 import bookingRoutes from './routes/bookings.js';
 import contactRoutes from './routes/contact.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
+import { logger } from './utils/logger.js';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env'), quiet: true });
 dotenv.config({ path: path.resolve(process.cwd(), 'backend/.env'), quiet: true });
@@ -37,6 +38,18 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  const startedAt = Date.now();
+  res.on('finish', () => {
+    logger.info('http_request', {
+      method: req.method,
+      path: req.originalUrl,
+      status: res.statusCode,
+      durationMs: Date.now() - startedAt
+    });
+  });
+  next();
+});
 
 // Routes
 app.use('/api/bookings', bookingRoutes);
@@ -51,7 +64,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  logger.info('server_started', { port: PORT });
 });
 
 export default app;

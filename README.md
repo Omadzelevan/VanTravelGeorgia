@@ -24,7 +24,12 @@ cp backend/.env.example backend/.env
 3. Put real values in `backend/.env`:
 - `RESEND_API_KEY`
 - `ADMIN_EMAIL`
+- `ADMIN_API_KEY`
 - `EMAIL_FROM` (e.g. `VanTravelGeorgia <onboarding@resend.dev>`)
+
+4. Optional frontend env in `.env`:
+- `VITE_SITE_URL` (your public domain)
+- `VITE_ENABLE_ADMIN=true` (enable `/admin` UI route)
 
 4. Start backend:
 ```bash

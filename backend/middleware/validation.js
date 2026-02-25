@@ -18,8 +18,9 @@ export const validateBooking = (req, res, next) => {
     errors.push('Valid tour ID is required');
   }
   if (!name || name.trim().length < 2) errors.push('Valid name is required');
+  if (name && name.trim().length > 100) errors.push('Name is too long');
   if (!email || !isValidEmail(email)) errors.push('Valid email is required');
-  if (!phone || phone.trim().length < 8) errors.push('Valid phone number is required');
+  if (!phone || !isValidPhone(phone)) errors.push('Valid phone number is required');
   if (!date) errors.push('Date is required');
   if (!Number.isInteger(normalizedGuests) || normalizedGuests < 1 || normalizedGuests > 20) {
     errors.push('Guests must be between 1 and 20');
@@ -53,10 +54,13 @@ export const validateContact = (req, res, next) => {
   const errors = [];
 
   if (!name || name.trim().length < 2) errors.push('Valid name is required');
+  if (name && name.trim().length > 100) errors.push('Name is too long');
   if (!email || !isValidEmail(email)) errors.push('Valid email is required');
-  if (phone && phone.trim().length < 8) errors.push('Valid phone number is required');
+  if (phone && !isValidPhone(phone)) errors.push('Valid phone number is required');
   if (!subject || subject.trim().length < 3) errors.push('Subject is required');
+  if (subject && subject.trim().length > 140) errors.push('Subject is too long');
   if (!message || message.trim().length < 10) errors.push('Message must be at least 10 characters');
+  if (message && message.trim().length > 2000) errors.push('Message is too long');
 
   if (errors.length > 0) {
     return res.status(400).json({
@@ -73,6 +77,12 @@ export const validateContact = (req, res, next) => {
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+}
+
+function isValidPhone(phone) {
+  const normalized = String(phone).replace(/\s+/g, '');
+  const phoneRegex = /^\+?[0-9]{8,20}$/;
+  return phoneRegex.test(normalized);
 }
 
 export const rateLimit = (maxRequests = 5, windowMs = 60000) => {

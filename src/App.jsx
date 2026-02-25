@@ -2,6 +2,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
   useLocation,
 } from "react-router-dom";
 import { useEffect, useLayoutEffect } from "react";
@@ -17,6 +18,7 @@ import Admin from "./pages/Admin";
 import Footer from "./components/layout/Footer";
 import { LanguageProvider } from "./context/LanguageContext";
 import Seo from "./components/seo/Seo";
+const ADMIN_UI_ENABLED = import.meta.env.VITE_ENABLE_ADMIN === "true";
 
 function HomePage() {
   return (
@@ -70,16 +72,20 @@ function App() {
             <Route
               path="/admin"
               element={
-                <>
-                  <Seo
-                    title="Admin | VanTravelGeorgia"
-                    description="Admin dashboard for VanTravelGeorgia."
-                    path="/admin"
-                    noindex
-                    image="/images/logo.png"
-                  />
-                  <Admin />
-                </>
+                ADMIN_UI_ENABLED ? (
+                  <>
+                    <Seo
+                      title="Admin | VanTravelGeorgia"
+                      description="Admin dashboard for VanTravelGeorgia."
+                      path="/admin"
+                      noindex
+                      image="/images/logo.png"
+                    />
+                    <Admin />
+                  </>
+                ) : (
+                  <Navigate to="/" replace />
+                )
               }
             />
           </Routes>

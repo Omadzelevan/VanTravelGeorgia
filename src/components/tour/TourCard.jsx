@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 // import PropTypes from "prop-types";
 
+function buildPexelsSrcSet(url) {
+  if (!url.includes("pexels.com")) return undefined;
+  return [480, 768, 1080]
+    .map((width) => `${url.replace(/w=\d+/, `w=${width}`)} ${width}w`)
+    .join(", ");
+}
+
 export default function ToursCard({
   id,
   title,
@@ -42,8 +49,11 @@ export default function ToursCard({
             <img
               key={`${id}-${cardImage}-${index}`}
               src={cardImage}
+              srcSet={buildPexelsSrcSet(cardImage)}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               alt={title}
               loading="lazy"
+              decoding="async"
               className={`tour-image-slide ${
                 index === currentImageIndex ? "active" : ""
               }`}

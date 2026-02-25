@@ -1,6 +1,7 @@
 import express from 'express';
 import { validateContact, rateLimit } from '../middleware/validation.js';
 import { sendContactEmail } from '../utils/email.js';
+import { logger } from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -26,7 +27,7 @@ router.post('/', rateLimit(5, 60_000), validateContact, async (req, res) => {
       message: 'Message sent successfully'
     });
   } catch (error) {
-    console.error('Contact send error:', error);
+    logger.error('contact_send_error', { error: error?.message, stack: error?.stack });
     if (String(error?.message || '').toLowerCase().includes('timed out')) {
       return res.status(202).json({
         success: true,
